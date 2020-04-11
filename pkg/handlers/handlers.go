@@ -8,32 +8,22 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	
+
 	types "github.com/fahlmant/backlog-api/pkg/types"
+	mydb "github.com/fahlmant/backlog-api/pkg/database"
 )
 
-
-func homePage(w http.ResponseWriter, r *http.Request){
-    fmt.Fprintf(w, "Hello World")
-    fmt.Println("Endpoint Hit: homePage")
+func homePage(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hello World")
+	fmt.Println("Endpoint Hit: homePage")
 }
 
 func gamesHandler(w http.ResponseWriter, r *http.Request) {
 
-	var games []types.Game
-	game := types.Game{
-		ID: uuid.New(),
-		Title: "Foo",
-		Platform: "Bar",
+	games, err := mydb.GetAllGames(mydb.DB)
+	if err != nil {
+		panic(err)
 	}
-	game2 := types.Game{
-		ID: uuid.New(),
-		Title: "Boo",
-		Platform: "Far",
-	}
-
-	games = append(games, game)
-	games = append(games, game2)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(games)
@@ -43,11 +33,18 @@ func gameGet(w http.ResponseWriter, r *http.Request) {
 
 	//fmt.Printf("%+v\n", mux.Vars(r)["id"])
 
-	game := types.Game{
-		ID: uuid.New(),
-		Title: "Foo",
+/*	game := types.Game{
+		ID:       uuid.New(),
+		Title:    "Foo",
 		Platform: "Bar",
+	}*/
+
+	id := mux.Vars(r)["id"]
+	uuid, err := uuid.Parse(id)
+	if err != nil {
+		panic(err)
 	}
+	game, err := mydb.GetGame(mydb.DB, uuid)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(game)
@@ -59,17 +56,15 @@ func gamePost(w http.ResponseWriter, r *http.Request) {
 	//fmt.Fprintf(w, "POST/PUT Single Game: ")
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	json.Unmarshal(reqBody, &game)
-	fmt.Printf("%+v\n",game)
+	fmt.Printf("%+v\n", game)
 }
 
 func gamePut(w http.ResponseWriter, r *http.Request) {
 
-	
 }
 
 func gameDelete(w http.ResponseWriter, r *http.Request) {
 
-	
 }
 
 func HandleRequests(router *mux.Router) {
