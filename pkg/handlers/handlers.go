@@ -31,14 +31,6 @@ func gamesHandler(w http.ResponseWriter, r *http.Request) {
 
 func gameGet(w http.ResponseWriter, r *http.Request) {
 
-	//fmt.Printf("%+v\n", mux.Vars(r)["id"])
-
-/*	game := types.Game{
-		ID:       uuid.New(),
-		Title:    "Foo",
-		Platform: "Bar",
-	}*/
-
 	id := mux.Vars(r)["id"]
 	uuid, err := uuid.Parse(id)
 	if err != nil {
@@ -53,10 +45,8 @@ func gameGet(w http.ResponseWriter, r *http.Request) {
 func gamePost(w http.ResponseWriter, r *http.Request) {
 
 	var game types.Game
-	//fmt.Fprintf(w, "POST/PUT Single Game: ")
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	json.Unmarshal(reqBody, &game)
-	fmt.Printf("%+v\n", game)
 }
 
 func gamePut(w http.ResponseWriter, r *http.Request) {
@@ -70,8 +60,8 @@ func gameDelete(w http.ResponseWriter, r *http.Request) {
 func HandleRequests(router *mux.Router) {
 	router.HandleFunc("/", homePage).Methods("GET")
 	router.HandleFunc("/games", gamesHandler).Methods("GET")
-	router.HandleFunc("/games", gamePut).Methods("PUT")
+	router.HandleFunc("/games", gamePost).Methods("POST")
 	router.HandleFunc("/games/{id}", gameGet).Methods("GET")
-	router.HandleFunc("/games/{id}", gamePost).Methods("POST")
+	router.HandleFunc("/games/{id}", gamePut).Methods("PUT")
 	router.HandleFunc("/games/{id}", gameDelete).Methods("DELETE")
 }
