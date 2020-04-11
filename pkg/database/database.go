@@ -5,24 +5,24 @@ import (
 	"fmt"
 	"os"
 
-	_ "github.com/lib/pq"
 	"github.com/google/uuid"
+	_ "github.com/lib/pq"
 
 	"github.com/fahlmant/backlog-api/pkg/types"
 )
 
 const (
-    dbhost = "DBHOST"
-    dbport = "DBPORT"
-    dbuser = "DBUSER"
-    dbpass = "DBPASS"
-    dbname = "DBNAME"
+	dbhost    = "DBHOST"
+	dbport    = "DBPORT"
+	dbuser    = "DBUSER"
+	dbpass    = "DBPASS"
+	dbname    = "DBNAME"
+	gameTable = `games`
 )
 
 var (
 	DB *sql.DB
 )
-
 
 func InitDb() {
 	var err error
@@ -32,7 +32,7 @@ func InitDb() {
 		config[dbhost], config[dbport],
 		config[dbuser], config[dbpass], config[dbname])
 
-	DB, err = sql.Open("postgres",psqlInfo)
+	DB, err = sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)
 	}
@@ -40,8 +40,8 @@ func InitDb() {
 	if err != nil {
 		panic(err)
 	}
-	
-	fmt.Println("Successfully connected!") 
+
+	fmt.Println("Successfully connected!")
 }
 
 func dbConfig() map[string]string {
@@ -109,7 +109,7 @@ func GetGame(db *sql.DB, uuid uuid.UUID) (types.Game, error) {
 
 	var game types.Game
 
-	sqlStatement := `SELECT * FROM games WHERE id=$1`
+	sqlStatement := `SELECT * FROM ` + gameTable + ` WHERE id=$1`
 	row := db.QueryRow(sqlStatement, uuid)
 	err := row.Scan(
 		&game.ID,
@@ -126,5 +126,4 @@ func GetGame(db *sql.DB, uuid uuid.UUID) (types.Game, error) {
 	}
 
 	return game, nil
-
 }
