@@ -5,7 +5,7 @@ import (
 )
 
 type Game struct {
-	ID uuid.UUID `json:"ID"`
-	Title string `json:"Title"`
-	Platform string `json:"Platform"s`
+	ID       uuid.UUID `json:"ID"`
+	Title    string    `json:"Title"`
+	Platform string    `json:"Platform"s`
 }
