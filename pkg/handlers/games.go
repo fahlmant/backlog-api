@@ -64,13 +64,15 @@ func gamePost(w http.ResponseWriter, r *http.Request) {
 
 func gamePut(w http.ResponseWriter, r *http.Request) {
 
+	var game types.Game
+	var err error
+
 	id := mux.Vars(r)["id"]
-	uuid, err := uuid.Parse(id)
+	game.ID, err = uuid.Parse(id)
 	if err != nil {
 		panic(err)
 	}
 
-	var game types.Game
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	json.Unmarshal(reqBody, &game)
 
@@ -79,10 +81,7 @@ func gamePut(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	game.ID = uuid
-
 	mydb.UpdateGame(mydb.DB, game)
-
 }
 
 func gameDelete(w http.ResponseWriter, r *http.Request) {
