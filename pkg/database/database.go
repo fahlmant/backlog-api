@@ -127,3 +127,17 @@ func GetGame(db *sql.DB, uuid uuid.UUID) (types.Game, error) {
 
 	return game, nil
 }
+
+
+func CreateGame(db *sql.DB, game types.Game) error {
+
+	uuid := uuid.New()
+	sqlStatement := `INSERT INTO ` + gameTable + ` (ID, Title, Platform)
+					VALUES ($1, $2, $3)`
+	_, err := db.Exec(sqlStatement, uuid, game.Title, game.Platform)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
