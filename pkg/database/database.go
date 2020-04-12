@@ -142,6 +142,17 @@ func CreateGame(db *sql.DB, game types.Game) error {
 	return nil
 }
 
+func UpdateGame(db *sql.DB, game types.Game) error{
+
+	sqlStatement := `UPDATE ` + gameTable + ` SET Title=$2, Platform=$3 WHERE id=$1`
+	_, err := db.Exec(sqlStatement, game.ID, game.Title, game.Platform)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func DeleteGame(db *sql.DB, uuid uuid.UUID) error {
 
 
