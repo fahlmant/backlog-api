@@ -1,6 +1,5 @@
 package database
 
-
 import (
 	"database/sql"
 	"fmt"
@@ -65,13 +64,11 @@ func GetGame(db *sql.DB, uuid uuid.UUID) (types.Game, error) {
 	return game, nil
 }
 
-
 func CreateGame(db *sql.DB, game types.Game) error {
 
-	uuid := uuid.New()
 	sqlStatement := `INSERT INTO ` + gameTable + ` (ID, Title, Platform)
 					VALUES ($1, $2, $3)`
-	_, err := db.Exec(sqlStatement, uuid, game.Title, game.Platform)
+	_, err := db.Exec(sqlStatement, game.ID, game.Title, game.Platform)
 	if err != nil {
 		return err
 	}
@@ -79,7 +76,7 @@ func CreateGame(db *sql.DB, game types.Game) error {
 	return nil
 }
 
-func UpdateGame(db *sql.DB, game types.Game) error{
+func UpdateGame(db *sql.DB, game types.Game) error {
 
 	sqlStatement := `UPDATE ` + gameTable + ` SET Title=$2, Platform=$3 WHERE id=$1`
 	_, err := db.Exec(sqlStatement, game.ID, game.Title, game.Platform)
@@ -91,7 +88,6 @@ func UpdateGame(db *sql.DB, game types.Game) error{
 }
 
 func DeleteGame(db *sql.DB, uuid uuid.UUID) error {
-
 
 	sqlStatement := `DELETE FROM ` + gameTable + ` WHERE id=$1`
 	_, err := db.Exec(sqlStatement, uuid)

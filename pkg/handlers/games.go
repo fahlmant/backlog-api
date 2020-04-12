@@ -8,8 +8,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 
-	types "github.com/fahlmant/backlog-api/pkg/types"
 	mydb "github.com/fahlmant/backlog-api/pkg/database"
+	types "github.com/fahlmant/backlog-api/pkg/types"
 )
 
 func gamesHandler(w http.ResponseWriter, r *http.Request) {
@@ -43,12 +43,23 @@ func gamePost(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(reqBody, &game)
 
 	if game.Title == "" || game.Platform == "" {
-		json.NewEncoder(w).Encode(struct{Error string}{"Missing Title or Platform",})
+		json.NewEncoder(w).Encode(struct{ Error string }{"Missing Title or Platform"})
 		return
 	}
 
-	mydb.CreateGame(mydb.DB, game)
+	uuid := uuid.New()
+	game.ID = uuid
 
+	err := mydb.CreateGame(mydb.DB, game)
+
+	if err != nil {
+		json.NewEncoder(w).Encode(struct{ Error string }{"Error creating new game"})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(game)
+	return
 }
 
 func gamePut(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +75,7 @@ func gamePut(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(reqBody, &game)
 
 	if game.Title == "" || game.Platform == "" {
-		json.NewEncoder(w).Encode(struct{Error string}{"Missing Title or Platform",})
+		json.NewEncoder(w).Encode(struct{ Error string }{"Missing Title or Platform"})
 		return
 	}
 
