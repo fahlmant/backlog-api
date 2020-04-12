@@ -59,6 +59,25 @@ func gamePost(w http.ResponseWriter, r *http.Request) {
 
 func gamePut(w http.ResponseWriter, r *http.Request) {
 
+	id := mux.Vars(r)["id"]
+	uuid, err := uuid.Parse(id)
+	if err != nil {
+		panic(err)
+	}
+
+	var game types.Game
+	reqBody, _ := ioutil.ReadAll(r.Body)
+	json.Unmarshal(reqBody, &game)
+
+	if game.Title == "" || game.Platform == "" {
+		json.NewEncoder(w).Encode(struct{Error string}{"Missing Title or Platform",})
+		return
+	}
+
+	game.ID = uuid
+
+	mydb.UpdateGame(mydb.DB, game)
+
 }
 
 func gameDelete(w http.ResponseWriter, r *http.Request) {
