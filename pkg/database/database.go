@@ -141,3 +141,15 @@ func CreateGame(db *sql.DB, game types.Game) error {
 
 	return nil
 }
+
+func DeleteGame(db *sql.DB, uuid uuid.UUID) error {
+
+
+	sqlStatement := `DELETE FROM ` + gameTable + ` WHERE id=$1`
+	_, err := db.Exec(sqlStatement, uuid)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
