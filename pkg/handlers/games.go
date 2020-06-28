@@ -12,6 +12,14 @@ import (
 	types "github.com/fahlmant/backlog-api/pkg/types"
 )
 
+func registerGameHandlers(router *mux.Router) {
+	router.HandleFunc("/games", gamesHandler).Methods("GET")
+	router.HandleFunc("/games", gamePost).Methods("POST")
+	router.HandleFunc("/games/{id}", gameGet).Methods("GET")
+	router.HandleFunc("/games/{id}", gamePut).Methods("PUT")
+	router.HandleFunc("/games/{id}", gameDelete).Methods("DELETE")
+}
+
 func gamesHandler(w http.ResponseWriter, r *http.Request) {
 
 	//Get all games from database
