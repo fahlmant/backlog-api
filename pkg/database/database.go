@@ -12,7 +12,7 @@ var (
 	DB *sql.DB
 )
 
-func dbInit() {
+func InitDb () {
 	var err error
 	config := dbConfig()
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
@@ -43,21 +43,15 @@ func dbConfig() map[string]string {
 	
 	conf := make(map[string]string)
 	host := viper.GetString("database.dbhost")
-	fmt.Println(host)
 	port := viper.GetString("database.dbport")
-	fmt.Println(port)
 	user := viper.GetString("database.dbuser")
-	fmt.Println(user)
 	password := viper.GetString("database.dbpass")
-	fmt.Println(password)
 	name := viper.GetString("database.dbname")
-	fmt.Println(name)
 
 	conf["dbhost"] = host
 	conf["dbport"] = port
 	conf["dbuser"] = user
 	conf["dbpass"] = password
 	conf["dbname"] = name
-	fmt.Println(conf)
 	return conf
 	}
