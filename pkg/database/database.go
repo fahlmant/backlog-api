@@ -33,7 +33,7 @@ func InitDb () {
 }
 
 func dbConfig() map[string]string {
-	viper.AddConfigPath("/Users/jordanlange/Documents/projects/personal/backlog-api/pkg/config")
+	viper.AddConfigPath("../../pkg/config")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	err := viper.ReadInConfig()
